@@ -27,9 +27,9 @@ export class CourrierService {
   return this.http.get<any[]>('http://localhost:3000/api/actions');
 }
 
-affecterCourrierAvecActions(id: number, service_affecte: string, remarque_direction: string, actions: number[]) {
+affecterCourrierAvecActions(id: number, services: string[], remarque_direction: string, actions: number[]) {
   return this.http.put(`http://localhost:3000/api/courriers/${id}/affecter`, {
-    service_affecte,
+    services,
     remarque_direction,
     actions
   });

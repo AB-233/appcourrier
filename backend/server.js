@@ -83,7 +83,7 @@ app.post('/api/courriers', upload.array('pieces_jointes'), (req, res) => {
 // Récupérer les courriers à traiter par la direction (non encore affectés)
 app.get('/api/courriers/direction', (req, res) => {
   db.query(
-    'SELECT * FROM courrier WHERE est_visible_direction = 1 AND service_affecte IS NULL AND archive = 0',
+    'SELECT * FROM courrier WHERE est_visible_direction = 1 AND archive = 0',
     (err, rows) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json(rows);
@@ -101,7 +101,7 @@ app.post('/api/direction', (req, res) => {
 
   db.query(
     `UPDATE courrier 
-     SET service_affecte = ?, remarque_direction = ?, est_visible_service = 1, est_visible_direction = 0, etat_courrier = 1
+     SET service_affecte = ?, remarque_direction = ?, est_visible_service = 1, est_visible_direction = 1, etat_courrier = 1
      WHERE id = ?`,
     [service_affecte, remarque_direction, courrierId],
     (err, result) => {
@@ -121,32 +121,45 @@ app.get('/api/courriers/direction', (req, res) => {
   );
 });
 
-// Affecter un courrier à un service avec une remarque et des actions
 app.put('/api/courriers/:id/affecter', (req, res) => {
   const courrierId = req.params.id;
-  const { service_affecte, remarque_direction, actions } = req.body;
+  const { services, remarque_direction, actions } = req.body;
 
-  if (!service_affecte || !Array.isArray(actions) || actions.length === 0) {
-    return res.status(400).json({ error: 'Service ou actions manquants.' });
+  if (!Array.isArray(services) || services.length === 0 || !Array.isArray(actions) || actions.length === 0) {
+    return res.status(400).json({ error: 'Services ou actions manquants.' });
   }
 
-  // Mettre à jour le courrier
+  // Mettre à jour le courrier (optionnel : tu peux choisir de ne pas toucher service_affecte ici)
   db.query(
     `UPDATE courrier 
-     SET service_affecte = ?, remarque_direction = ?, est_visible_service = 1, est_visible_direction = 0, etat_courrier = 1
+     SET remarque_direction = ?, est_visible_service = 1, etat_courrier = 1
      WHERE id = ?`,
-    [service_affecte, remarque_direction, courrierId],
+    [remarque_direction, courrierId],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      // Insérer les actions dans la table de liaison
-      const values = actions.map(actionId => [courrierId, service_affecte, actionId]);
+      // Supprimer les anciennes affectations
       db.query(
-        'INSERT INTO courrier_service_action (courrier_id, service, action_id) VALUES ?',
-        [values],
+        'DELETE FROM courrier_service_action WHERE courrier_id = ?',
+        [courrierId],
         (err2) => {
           if (err2) return res.status(500).json({ error: err2.message });
-          res.json({ message: 'Courrier affecté au service avec actions.' });
+
+          // Insérer les nouvelles affectations (pour chaque service et chaque action)
+          const values = [];
+          services.forEach(service => {
+            actions.forEach(actionId => {
+              values.push([courrierId, service, actionId]);
+            });
+          });
+          db.query(
+            'INSERT INTO courrier_service_action (courrier_id, service, action_id) VALUES ?',
+            [values],
+            (err3) => {
+              if (err3) return res.status(500).json({ error: err3.message });
+              res.json({ message: 'Courrier affecté aux services avec actions.' });
+            }
+          );
         }
       );
     }

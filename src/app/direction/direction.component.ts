@@ -39,10 +39,10 @@ constructor(private courrierService: CourrierService, private fb: FormBuilder) {
     this.courrierService.getCourriersPourDirection().subscribe(data => {
       // Ajoute les propriétés pour la sélection dynamique
       this.courriers = data.map((c: any) => ({
-        ...c,
-        service_affecte: '',
-        actionsSelectionnees: []
-      }));
+  ...c,
+  servicesAffectes: [],
+  actionsSelectionnees: []
+}));
     });
   }
 
@@ -60,15 +60,16 @@ constructor(private courrierService: CourrierService, private fb: FormBuilder) {
 
   affecter() {
     const courrier = this.courriers.find(c => c.id === this.selectedCourrierId);
-    if (courrier) {
-      const { remarque_direction } = this.affectationForm.value;
-      this.courrierService.affecterCourrierAvecActions(
-        courrier.id,
-        courrier.service_affecte,
-        remarque_direction,
-        courrier.actionsSelectionnees
-      ).subscribe({
-        next: () => {
+if (courrier) {
+  const { remarque_direction } = this.affectationForm.value;
+  this.courrierService.affecterCourrierAvecActions(
+    courrier.id,
+    courrier.servicesAffectes, // tableau d'emails/services
+    remarque_direction,
+    courrier.actionsSelectionnees
+  ).subscribe({ next: () => {
+              console.log("hello3")
+
           this.message = 'Courrier affecté avec succès !';
           this.selectedCourrierId = null;
           this.loadCourriers();

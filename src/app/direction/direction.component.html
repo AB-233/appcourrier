@@ -20,10 +20,10 @@
         <td>{{ courrier.date_signature | date }}</td>
         <td>{{ courrier.objet_courrier }}</td>
         <td>
-            <select class="form-select" [(ngModel)]="courrier.service_affecte" name="service_{{courrier.id}}">
-                <option *ngFor="let service of services" [value]="service.email">{{ service.email }}</option>
-            </select>
-        </td>
+  <select class="form-select" multiple [(ngModel)]="courrier.servicesAffectes" name="services_{{courrier.id}}">
+    <option *ngFor="let service of services" [value]="service.email">{{ service.email }}</option>
+  </select>
+</td>
         <td>
           <select class="form-select" multiple [(ngModel)]="courrier.actionsSelectionnees" name="actions_{{courrier.id}}">
             <option *ngFor="let action of actions" [value]="action.id">{{ action.nom }}</option>
@@ -36,9 +36,9 @@
     </tbody>
   </table>
 
-  <div *ngIf="selectedCourrierId" class="mt-4">
+  <div *ngIf="selectedCourrierId" class="my-5">
     <h5>Affecter le courrier</h5>
-    <form [formGroup]="affectationForm" (ngSubmit)="affecter()">
+    <form [formGroup]="affectationForm" (ngSubmit)="affecter()" >
       <div class="mb-3">
         <label>Remarque de la direction</label>
         <textarea class="form-control" formControlName="remarque_direction"></textarea>
