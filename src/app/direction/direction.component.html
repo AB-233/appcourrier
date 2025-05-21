@@ -1,0 +1,50 @@
+<div class="container my-5 card">
+  <h2>Courriers à traiter par la direction</h2>
+  <div *ngIf="message" class="alert alert-success">{{ message }}</div>
+  <table class="table table-bordered" *ngIf="courriers.length > 0">
+    <thead>
+      <tr>
+        <th>Numéro d'arrivée</th>
+        <th>Origine</th>
+        <th>Date signature</th>
+        <th>Objet</th>
+        <th>Service</th>
+        <th>Actions à mener</th>
+        <th>Affecter</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let courrier of courriers">
+        <td>{{ courrier.num_CA }}</td>
+        <td>{{ courrier.origine_courrier }}</td>
+        <td>{{ courrier.date_signature | date }}</td>
+        <td>{{ courrier.objet_courrier }}</td>
+        <td>
+            <select class="form-select" [(ngModel)]="courrier.service_affecte" name="service_{{courrier.id}}">
+                <option *ngFor="let service of services" [value]="service.email">{{ service.email }}</option>
+            </select>
+        </td>
+        <td>
+          <select class="form-select" multiple [(ngModel)]="courrier.actionsSelectionnees" name="actions_{{courrier.id}}">
+            <option *ngFor="let action of actions" [value]="action.id">{{ action.nom }}</option>
+          </select>
+        </td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="ouvrirAffectation(courrier)">Affecter</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="selectedCourrierId" class="mt-4">
+    <h5>Affecter le courrier</h5>
+    <form [formGroup]="affectationForm" (ngSubmit)="affecter()">
+      <div class="mb-3">
+        <label>Remarque de la direction</label>
+        <textarea class="form-control" formControlName="remarque_direction"></textarea>
+      </div>
+      <button type="submit" class="btn btn-success">Valider l'affectation</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="selectedCourrierId = null">Annuler</button>
+    </form>
+  </div>
+</div>

@@ -1,1 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+// MDB SCSS
+@import "~mdb-angular-ui-kit/assets/scss/mdb.scss";/* You can add global styles to this file, and also import other style files */
+
+
+.t-white {
+  color: #fff !important;
+}
