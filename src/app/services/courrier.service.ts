@@ -51,4 +51,8 @@ mettreAJourEtatCourrier(id: number, etat_traitement: string, commentaire_service
 getArchives() {
   return this.http.get<any[]>('http://localhost:3000/api/archives');
 }
+
+getCourriersTraitesPourService() {
+  return this.http.get<any[]>('http://localhost:3000/api/courriers/traites');
+}
  }

@@ -237,6 +237,21 @@ app.get('/api/archives', (req, res) => {
     }
   );
 });
+// Récupérer les courriers déjà traités pour tous les services
+app.get('/api/courriers/traites', (req, res) => {
+  db.query(
+    `SELECT c.id, c.num_CA, c.objet_courrier, c.commentaire_service, c.etat_traitement, c.date_signature, 
+            a.date_archivage AS date_traitement, a.archive_par
+     FROM archive a
+     JOIN courrier c ON a.courrier_id = c.id
+     WHERE a.etat_traitement = 'traité'
+     ORDER BY a.date_archivage DESC`,
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    }
+  );
+});
 
 // Lancer le serveur
 app.listen(3000, () => {

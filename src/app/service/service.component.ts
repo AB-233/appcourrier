@@ -12,10 +12,14 @@ export class ServiceComponent implements OnInit {
 
   constructor(private courrierService: CourrierService) {}
 
-  ngOnInit(): void {
-    this.loadCourriers();
-  }
+  courriersTraites: any[] = [];
 
+ngOnInit(): void {
+  this.loadCourriers();
+  this.courrierService.getCourriersTraitesPourService().subscribe(data => {
+    this.courriersTraites = data;
+  });
+}
   loadCourriers() {
     this.courrierService.getCourriersPourService().subscribe(data => {
       this.courriers = data.map((c: any) => ({
@@ -25,8 +29,12 @@ export class ServiceComponent implements OnInit {
       }));
     });
   }
+  
+get courriersNonTraites() {
+  return this.courriers.filter(c => c.etat_traitement !== 'traité');
+}
 
-  mettreAJour(courrier: any) {
+mettreAJour(courrier: any) {
     // Remplace ceci par la vraie valeur de l'utilisateur connecté
     const traite_par = courrier.service_affecte || 'service@exemple.com';
 

@@ -12,6 +12,7 @@ export interface Courrier {
   estVisibleService: boolean;
   reponseService?: string;
   etatCourrier: number;
+  etat_traitement: string;
   serviceAffecte?: string;
   archive: boolean;
   piecesJointes?: MaPieceJointe[];

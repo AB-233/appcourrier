@@ -1,6 +1,6 @@
 <div class="container my-5 card">
   <h2>Courriers à traiter par le service</h2>
-  <table class="table table-bordered" *ngIf="courriers.length > 0">
+  <table id="td1" class="table table-bordered" *ngIf="courriers.length > 0">
     <thead>
       <tr>
         <th>Numéro d'arrivée</th>
@@ -11,8 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let courrier of courriers">
-        <td>{{ courrier.num_CA }}</td>
+      <tr *ngFor="let courrier of courriersNonTraites">
         <td>{{ courrier.objet_courrier }}</td>
         <td>
           <select class="form-select" [(ngModel)]="courrier.etat_traitement">
@@ -31,4 +30,26 @@
     </tbody>
   </table>
   <div *ngIf="message" class="alert alert-success mt-3">{{ message }}</div>
+
+  <!-- Nouveau tableau pour les courriers déjà traités -->
+  <h3 class="mt-5">Courriers déjà traités</h3>
+  <table class="table table-bordered" *ngIf="courriersTraites.length > 0">
+    <thead>
+      <tr>
+        <th>Numéro d'arrivée</th>
+        <th>Objet</th>
+        <th>Commentaire</th>
+        <th>Date traitement</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let courrier of courriersTraites">
+        <td>{{ courrier.num_CA }}</td>
+        <td>{{ courrier.objet_courrier }}</td>
+        <td>{{ courrier.commentaire_service }}</td>
+        <td>{{ courrier.date_traitement | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="courriersTraites.length === 0" class="alert alert-info">Aucun courrier traité.</div>
 </div>
