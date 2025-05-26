@@ -1,0 +1,28 @@
+<div class="container my-5 card">
+  <h2>Courriers archivés</h2>
+  <table class="table table-bordered" *ngIf="archives.length > 0">
+    <thead>
+      <tr>
+        <th>Numéro d'arrivée</th>
+        <th>Objet</th>
+        <th>Origine</th>
+        <th>Date signature</th>
+        <th>Date archivage</th>
+        <th>Commentaire</th>
+        <th>Archivé par</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let archive of archives">
+        <td>{{ archive.num_CA }}</td>
+        <td>{{ archive.objet_courrier }}</td>
+        <td>{{ archive.origine_courrier }}</td>
+        <td>{{ archive.date_signature | date }}</td>
+        <td>{{ archive.date_archivage | date:'short' }}</td>
+        <td>{{ archive.commentaire_service }}</td>
+        <td>{{ archive.archive_par }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="archives.length === 0" class="alert alert-info">Aucun courrier archivé.</div>
+</div>

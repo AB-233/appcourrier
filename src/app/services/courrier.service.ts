@@ -48,4 +48,7 @@ mettreAJourEtatCourrier(id: number, etat_traitement: string, commentaire_service
     traite_par
   });
 }
+getArchives() {
+  return this.http.get<any[]>('http://localhost:3000/api/archives');
+}
  }

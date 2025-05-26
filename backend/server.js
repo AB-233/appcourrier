@@ -207,19 +207,33 @@ app.put('/api/courriers/:id/etat', (req, res) => {
     (err) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      // Si le courrier est traité, on l'ajoute dans la nouvelle table
+      // Si traité, archiver automatiquement
       if (etat_traitement === 'traité') {
         db.query(
-          'INSERT INTO courrier_traite (courrier_id, etat_traitement, commentaire_service, traite_par) VALUES (?, ?, ?, ?)',
+          'INSERT IGNORE INTO archive (courrier_id, etat_traitement, commentaire_service, archive_par) VALUES (?, ?, ?, ?)',
           [courrierId, etat_traitement, commentaire_service, traite_par || null],
           (err2) => {
             if (err2) return res.status(500).json({ error: err2.message });
-            res.json({ message: 'État du courrier mis à jour et sauvegardé comme traité.' });
+            res.json({ message: 'Courrier traité et archivé.' });
           }
         );
       } else {
         res.json({ message: 'État du courrier mis à jour.' });
       }
+    }
+  );
+});
+
+// Récupérer la liste des courriers archivés
+app.get('/api/archives', (req, res) => {
+  db.query(
+    `SELECT a.*, c.num_CA, c.objet_courrier, c.origine_courrier, c.date_signature
+     FROM archive a
+     JOIN courrier c ON a.courrier_id = c.id
+     ORDER BY a.date_archivage DESC`,
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
     }
   );
 });

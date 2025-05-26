@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DirectionComponent } from './direction/direction.component';
 import { ServiceComponent } from './service/service.component';
+import { AchiveComponent } from './achive/achive.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ServiceComponent } from './service/service.component';
     FooterComponent,
     SecretariatComponent,
     DirectionComponent,
-    ServiceComponent
+    ServiceComponent,
+    AchiveComponent
   ],
   imports: [
     BrowserModule,
