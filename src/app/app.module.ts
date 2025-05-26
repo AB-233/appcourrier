@@ -10,6 +10,7 @@ import { SecretariatComponent } from './secretariat/secretariat.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DirectionComponent } from './direction/direction.component';
+import { ServiceComponent } from './service/service.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { DirectionComponent } from './direction/direction.component';
     NavbarComponent,
     FooterComponent,
     SecretariatComponent,
-    DirectionComponent
+    DirectionComponent,
+    ServiceComponent
   ],
   imports: [
     BrowserModule,

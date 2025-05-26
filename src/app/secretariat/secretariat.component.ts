@@ -10,7 +10,7 @@ import { CourrierService } from '../services/courrier.service';
 export class SecretariatComponent implements OnInit {
   courrierForm: FormGroup;
   fichiers: File[] = [];
-  message: string = '';
+  message = '';
 
   constructor(private fb: FormBuilder, private courrierService: CourrierService) {
     this.courrierForm = this.fb.group({
@@ -31,6 +31,8 @@ export class SecretariatComponent implements OnInit {
   }
 
   enregistrerCourrier() {
+    if (this.courrierForm.invalid) return;
+
     const formData = new FormData();
     Object.entries(this.courrierForm.value).forEach(([key, value]) => {
       formData.append(key, value as string);

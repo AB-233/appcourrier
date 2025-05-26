@@ -185,6 +185,45 @@ app.get('/api/services', (req, res) => {
   );
 });
 
+// Récupérer les courriers affectés à un service (à adapter selon l'utilisateur connecté)
+app.get('/api/courriers/service', (req, res) => {
+  db.query(
+    'SELECT * FROM courrier WHERE est_visible_service = 1 AND archive = 0',
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    }
+  );
+});
+
+// Mettre à jour l'état et le commentaire d'un courrier
+app.put('/api/courriers/:id/etat', (req, res) => {
+  const courrierId = req.params.id;
+  const { etat_traitement, commentaire_service, traite_par } = req.body;
+
+  db.query(
+    'UPDATE courrier SET etat_traitement = ?, commentaire_service = ? WHERE id = ?',
+    [etat_traitement, commentaire_service, courrierId],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      // Si le courrier est traité, on l'ajoute dans la nouvelle table
+      if (etat_traitement === 'traité') {
+        db.query(
+          'INSERT INTO courrier_traite (courrier_id, etat_traitement, commentaire_service, traite_par) VALUES (?, ?, ?, ?)',
+          [courrierId, etat_traitement, commentaire_service, traite_par || null],
+          (err2) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+            res.json({ message: 'État du courrier mis à jour et sauvegardé comme traité.' });
+          }
+        );
+      } else {
+        res.json({ message: 'État du courrier mis à jour.' });
+      }
+    }
+  );
+});
+
 // Lancer le serveur
 app.listen(3000, () => {
   console.log('API démarrée sur http://localhost:3000');

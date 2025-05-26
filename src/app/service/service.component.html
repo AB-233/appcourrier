@@ -1,0 +1,34 @@
+<div class="container my-5 card">
+  <h2>Courriers à traiter par le service</h2>
+  <table class="table table-bordered" *ngIf="courriers.length > 0">
+    <thead>
+      <tr>
+        <th>Numéro d'arrivée</th>
+        <th>Objet</th>
+        <th>État</th>
+        <th>Commentaire</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let courrier of courriers">
+        <td>{{ courrier.num_CA }}</td>
+        <td>{{ courrier.objet_courrier }}</td>
+        <td>
+          <select class="form-select" [(ngModel)]="courrier.etat_traitement">
+            <option value="non traité">Non traité</option>
+            <option value="en cours">En cours</option>
+            <option value="traité">Traité</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" class="form-control" [(ngModel)]="courrier.commentaire_service">
+        </td>
+        <td>
+          <button class="btn btn-success btn-sm" (click)="mettreAJour(courrier)">Valider</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="message" class="alert alert-success mt-3">{{ message }}</div>
+</div>

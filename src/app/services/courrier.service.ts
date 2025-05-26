@@ -8,8 +8,8 @@ export class CourrierService {
 
   constructor(private http: HttpClient) {}
 
-  ajouterCourrier(formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, formData);
+  ajouterCourrier(formData: FormData) {
+    return this.http.post('http://localhost:3000/api/courriers', formData);
   }
 
   getCourriersPourDirection() {
@@ -37,4 +37,15 @@ affecterCourrierAvecActions(id: number, services: string[], remarque_direction: 
 getServices() {
   return this.http.get<any[]>('http://localhost:3000/api/services');
 }
+getCourriersPourService() {
+  return this.http.get<any[]>('http://localhost:3000/api/courriers/service');
 }
+
+mettreAJourEtatCourrier(id: number, etat_traitement: string, commentaire_service: string, traite_par: string) {
+  return this.http.put(`http://localhost:3000/api/courriers/${id}/etat`, {
+    etat_traitement,
+    commentaire_service,
+    traite_par
+  });
+}
+ }
